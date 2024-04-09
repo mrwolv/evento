@@ -1,10 +1,10 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import React from 'react'
+import Image from "next/image";
+import Link from "next/link";
+
 
 export default function Logo() {
   return (
-<Link href="/">
+    <Link href="/">
       <Image
         src="https://bytegrad.com/course-assets/react-nextjs/evento.png"
         alt="EVENTO logo"
@@ -12,5 +12,5 @@ export default function Logo() {
         height={12}
       />
     </Link>
-  )
+  );
 }

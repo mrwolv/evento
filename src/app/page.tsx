@@ -1,23 +1,22 @@
+import SearchForm from "@/components/search-form";
 import Link from "next/link";
-import React from "react";
+import H1 from "@/components/h1";
 
 const Home = () => {
   return (
-    <main>
-      <h1>Find events around you.</h1>
-      <p>Browse more that 10,000 events around yout.</p>
-      <form>
-        <input
-          type="text"
-          placeholder="Search event in any city...."
-          spellCheck={false}
-        />
-      </form>
-      <section>
-        <p>Popular</p>
-        <div>
-          <Link href={"/events/delhi"}>Delhi</Link>
-          <Link href={"/events/mumbai"}>Mumbai</Link>
+    <main className="flex flex-col px-3 items-center pt-36">
+      <H1>Find events around you.</H1>
+      <p className="mb-12 mt-7 text-2xl lg:text-3xl opacity-50">
+        Browse more that
+        <span className="italic font-bold underline text-accent"> 10,000 </span>
+        events around you.
+      </p>
+      <SearchForm />
+      <section className="mt-4 flex gap-x-4 text-sm text-white/50">
+        <p className="">Popular : </p>
+        <div className="space-x-3 font-semibold">
+          <Link href={"/events/delhi"}>Seatle</Link>
+          <Link href={"/events/mumbai"}>Austin</Link>
         </div>
       </section>
     </main>
