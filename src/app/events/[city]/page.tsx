@@ -1,33 +1,42 @@
 import H1 from "@/components/h1";
-import { EventoEvent } from "@/lib/types";
-import EventLists from "@/components/event-list";
-import { Sleep } from "@/lib/utils";
 
-type EventsPageProps = {
+import EventLists from "@/components/event-list";
+
+import { Suspense } from "react";
+import Loading from "./loading";
+import { Metadata } from "next";
+import { title } from "process";
+import { Capatalize } from "@/lib/utils";
+
+type Props = {
   params: {
     city: string;
   };
 };
 
-const EventsCity = async ({ params }: EventsPageProps) => {
-  const city = params.city;
-  await Sleep(2000);
-  const res = await fetch(
-    `https://bytegrad.com/course-assets/projects/evento/api/events?city=${city}`
-  );
+// Generating Metadata for diffrent Pages
 
-  const events: EventoEvent[] = await res.json();
+export function generateMetadata({ params }: Props):Metadata {
+  const city = params.city;
+
+  return {
+    title: city === "all" ? "All Events" : `Events in ${Capatalize(city)}`,
+  };
+}
+
+const EventsCity = ({ params }: Props) => {
+  const city = params.city;
 
   return (
     <main className="flex flex-col items-center py-24 px-[20px] min-h-[110vh]">
       <H1 className="mb-28">
         {city === "all" && "All Events "}
 
-        {city !== "all" &&
-          `Events in ${city.charAt(0).toUpperCase() + city.slice(1)}`}
+        {city !== "all" && `Events in ${Capatalize(city)}`}
       </H1>
-
-      <EventLists events={events} />
+      <Suspense fallback={<Loading />}>
+        <EventLists city={city} />
+      </Suspense>
     </main>
   );
 };
