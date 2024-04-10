@@ -1,7 +1,8 @@
 import clsx, { ClassValue } from "clsx";
 
 import { twMerge } from "tailwind-merge";
-import { EventoEvent } from "./types";
+import prisma from "./db";
+import { notFound } from "next/navigation";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -17,21 +18,44 @@ export async function Sleep(ms: number) {
   });
 }
 
-export async function fetchData(city: string) {
-  // await Sleep(2000);
-  const res = await fetch(
-    `https://bytegrad.com/course-assets/projects/evento/api/events?city=${city}`
-  );
+export async function fetchData(city: string, page = 1) {
+  prisma.eventoEvent.findMany();
 
-  const events: EventoEvent[] = await res.json();
-  return events;
+  const events = await prisma.eventoEvent.findMany({
+    where: {
+      city: city === "all" ? undefined : Capatalize(city),
+    },
+    orderBy: {
+      date: "asc",
+    },
+    take: 6,
+    skip: (page - 1) * 6,
+  });
+
+  let totalCount;
+  if (city === "all") {
+    totalCount = await prisma.eventoEvent.count();
+  } else {
+    totalCount = await prisma.eventoEvent.count({
+      where: {
+        city: Capatalize(city),
+      },
+    });
+  }
+
+  return { events, totalCount };
 }
 
 export async function getEvent(slug: string) {
-  const res = await fetch(
-    `https://bytegrad.com/course-assets/projects/evento/api/events/${slug}`
-  );
+  const event = await prisma.eventoEvent.findUnique({
+    where: {
+      slug: slug,
+    },
+  });
 
-  const event = await res.json();
+  if (!event) {
+    return notFound();
+  }
+
   return event;
 }

@@ -5,8 +5,10 @@ import EventLists from "@/components/event-list";
 import { Suspense } from "react";
 import Loading from "./loading";
 import { Metadata } from "next";
-import { title } from "process";
+
 import { Capatalize } from "@/lib/utils";
+
+import { z } from "zod";
 
 type Props = {
   params: {
@@ -14,18 +16,29 @@ type Props = {
   };
 };
 
+type EventPageProps = Props & {
+  searchParams: {
+    [key: string]: string | string[] | undefined;
+  };
+};
+
 // Generating Metadata for diffrent Pages
 
-export function generateMetadata({ params }: Props):Metadata {
+export function generateMetadata({ params }: Props): Metadata {
   const city = params.city;
 
   return {
     title: city === "all" ? "All Events" : `Events in ${Capatalize(city)}`,
   };
 }
+const pageNumberSchema = z.coerce.number().int().positive().optional();
 
-const EventsCity = ({ params }: Props) => {
+const EventsCity = ({ params, searchParams }: EventPageProps) => {
   const city = params.city;
+  const parsedPage = pageNumberSchema.safeParse(searchParams.page);
+  if (!parsedPage.success) {
+    throw new Error("Invalid page number");
+  }
 
   return (
     <main className="flex flex-col items-center py-24 px-[20px] min-h-[110vh]">
@@ -34,8 +47,8 @@ const EventsCity = ({ params }: Props) => {
 
         {city !== "all" && `Events in ${Capatalize(city)}`}
       </H1>
-      <Suspense fallback={<Loading />}>
-        <EventLists city={city} />
+      <Suspense key={city + parsedPage.data} fallback={<Loading />}>
+        <EventLists city={city} page={parsedPage.data} />
       </Suspense>
     </main>
   );
