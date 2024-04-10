@@ -15,8 +15,8 @@ const Home = () => {
       <section className="mt-4 flex gap-x-4 text-sm text-white/50">
         <p className="">Popular : </p>
         <div className="space-x-3 font-semibold">
-          <Link href={"/events/delhi"}>Seatle</Link>
-          <Link href={"/events/mumbai"}>Austin</Link>
+          <Link href={"/events/seattle"}>Seattle</Link>
+          <Link href={"/events/Austin"}>Austin</Link>
         </div>
       </section>
     </main>

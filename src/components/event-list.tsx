@@ -1,6 +1,6 @@
 import { EventoEvent } from "@prisma/client";
 import EventCard from "./event-card";
-import { fetchData } from "@/lib/utils";
+import { fetchData } from "@/lib/server-utils";
 import PaginationControl from "./pagination-control";
 
 type EventListProps = {
